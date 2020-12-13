@@ -1,15 +1,28 @@
 import React, { useState } from "react";
 import { Component } from "react";
+import styled from "styled-components";
+import { StyleRoot } from "radium";
 // import logo from "./logo.svg";
 import Person from "./Person/Person";
 import "./App.css";
 
+const StyledButton = styled.button`
+  background-color: ${props => props.alt ? 'red':'green'};
+  font: inherit;
+  border: 1px solid blue;
+  padding: 8px ;
+  cursor: pointer;
+  &:hover: {
+    background-color: ${props => props.alt ? 'salmon':'lightgreen'};
+    color: black
+  }
+`;
 class App extends Component {
   state = {
     persons: [
-      { id: 'id1', name: "Max", age: 28 },
-      { id: 'id2', name: "Min", age: 25 },
-      { id: 'id3', name: "jack", age: 29 },
+      { id: "id1", name: "Max", age: 28 },
+      { id: "id2", name: "Min", age: 25 },
+      { id: "id3", name: "jack", age: 29 },
     ],
     showPersons: false,
   };
@@ -31,22 +44,23 @@ class App extends Component {
   };
 
   nameChangedHandler = (event, id) => {
-    const personIndex = this.state.persons.findIndex(p => {
+    const personIndex = this.state.persons.findIndex((p) => {
       return p.id === id;
-    })
+    });
 
     const person = {
-      ...this.state.persons[personIndex]
-    }
+      ...this.state.persons[personIndex],
+    };
 
     // const person = Object.assign({}, this.state.persons[personIndex]);
 
-    person.name= event.target.value;
+    person.name = event.target.value;
 
-    const persons= [...this.state.persons];
+    const persons = [...this.state.persons];
     persons[personIndex] = person;
-    
-    this.setState({persons:persons
+
+    this.setState({
+      persons: persons,
       // persons: [
       //   { name: "Max", age: 28 },
       //   { name: event.target.value, age: 25 },
@@ -56,17 +70,21 @@ class App extends Component {
   };
 
   deletePersonHandler = (personIndex) => {
-    const persons = [... this.state.persons];
+    const persons = [...this.state.persons];
     persons.splice(personIndex, 1);
     this.setState({ persons: persons });
   };
   render() {
     const style = {
-      backgroundColor: "white",
+      backgroundColor: "green",
       font: "inherit",
       border: "1px solid blue",
       padding: "8px ",
       cursor: "pointer",
+      ":hover": {
+        backgroundColor: "lightgreen",
+        color: "black",
+      },
     };
 
     //Outputting the content conditionally
@@ -79,9 +97,9 @@ class App extends Component {
               <Person
                 name={person.name}
                 age={person.age}
-                key= {person.id}
+                key={person.id}
                 click={() => this.deletePersonHandler(index)}
-                changed= {event => this.nameChangedHandler(event, person.id)}
+                changed={(event) => this.nameChangedHandler(event, person.id)}
               />
             );
           })}
@@ -103,25 +121,43 @@ class App extends Component {
             /> */}
         </div>
       );
+      style.backgroundColor = "red";
+      style[":hover"] = {
+        backgroundColor: "orange",
+        color: "black",
+      };
     }
+    let classes = [];
+    if (this.state.persons.length <= 2) {
+      classes.push("blue");
+    }
+    if (this.state.persons.length <= 1) {
+      classes.push("bold");
+    }
+
     return (
-      <div className="App">
-        <h1>Hi, Welcome to the course ReactJs</h1>
-        <p>This is really working...!!!</p>
-        <button style={style} onClick={this.togglePersonHandler}>
-          Toggle Persons
-        </button>
-        {persons}
-        {/* {this.state.showPersons ? ( */}
-        {/* ) : null} */}
-      </div>
+      <StyleRoot>
+        <div className="App">
+          <h1>Hi, Welcome to the course ReactJs</h1>
+          <p className={classes.join(" ")}>This is really working...!!!</p>
+          <button style={style} onClick={this.togglePersonHandler}>
+            Toggle Persons
+          </button>
+          {persons}
+          {/* {this.state.showPersons ? ( */}
+          {/* ) : null} */}
+        </div>
+      </StyleRoot>
     );
     // return(React.createElement('div',{className: 'App'},React.createElement('h1',{className: 'App-header'},'Hi, Welcome')));
   }
 }
-
 export default App;
 
+//Radium
+// export default Radium(App);
+
+//app as a module
 // const app = (props) => {
 //   const [personsState, setPersonState] = useState({
 //     persons: [
