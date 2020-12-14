@@ -4,6 +4,9 @@ import styled from "styled-components";
 import { StyleRoot } from "radium";
 import Person from "./Person/Person";
 import classes from "./App.css";
+import ErrorBoundary from "./ErrorBoundary";
+
+
 // import styled from "styled-components";
 // import logo from "./logo.svg";
 
@@ -77,7 +80,7 @@ class App extends Component {
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
-            return (
+            return <ErrorBoundary key ={person.id}> 
               <Person
                 name={person.name}
                 age={person.age}
@@ -85,7 +88,7 @@ class App extends Component {
                 click={() => this.deletePersonHandler(index)}
                 changed={(event) => this.nameChangedHandler(event, person.id)}
               />
-            );
+            </ErrorBoundary>
           })}
           
         </div>
