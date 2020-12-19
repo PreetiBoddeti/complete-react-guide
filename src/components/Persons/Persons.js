@@ -1,17 +1,45 @@
-import React from "react";
+import React, { PureComponent } from "react";
 import Person from "./Person/Person";
 
-const persons = (props) =>
-  props.persons.map((person, index) => {
-    return (
-      <Person
-        name={person.name}
-        age={person.age}
-        key={person.id}
-        click={() => props.clicked(index)}
-        changed={(event) => props.changed(event, person.id)}
-      />
-    );
-  });
+class Persons extends PureComponent {
+  // static getDerivedStateFromProps(props, state){
+  //   console.log('[Persons.js] getDerivedStateFromProps');
+  // }
 
-export default persons;
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log("[Persons.js] shouldComponentUpdate");
+  //   if (nextProps.persons !== this.props.persons) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    console.log("[Persons.js] getSnapshotBeforeUpdate");
+    return { message: "snapshot" };
+  }
+
+  componentDidUpdate(prevProps, prevState, snapShot) {
+    console.log("[Person.js] componentDidUpdate");
+    console.log(snapShot);
+  }
+
+  render() {
+    return this.props.persons.map((person, index) => {
+      console.log("[Persons.js] rendering");
+      return (
+        <Person
+          name={person.name}
+          age={person.age}
+          key={person.id}
+          click={() => this.props.clicked(index)}
+          changed={(event) => this.props.changed(event, person.id)}
+          isAuth={this.props.isAuthenticated}
+        />
+      );
+    });
+  }
+}
+
+export default Persons;

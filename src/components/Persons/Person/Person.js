@@ -1,5 +1,7 @@
-import React from "react";
-import classes from "./Person.css";
+import React, { Component } from "react";
+import Aux from "../../../hoc/Auxiliary";
+import PropTypes from "prop-types";
+// import classes from "./Person.css";
 
 // const styledDiv =styled.div`
 //     width: 60%;
@@ -14,17 +16,39 @@ import classes from "./Person.css";
 //     }
 // `;
 
-const person = (props) => {
-  
-  return (
-    <div className={classes.Person} >
-      <p onClick={props.click}>
-        Hi, I am {props.name}. I am {props.age} years old. {props.children}
-      </p>
-      <input type="text" onChange={props.changed}></input>
-    </div>
-  );        
+class Person extends Component {
+  constructor(props){
+    super(props);
+    this.inputElementRef= React.createRef();
+  }
+  componentDidMount() {
+    // this.inputElement.focus();
+    this.inputElementRef.current.focus();
+  }
+  render() {
+    console.log("[Person.js] render");
+    return (
+      <Aux>
+        {this.props.isAuth ? <p>Authenticated...!!!!</p> : <p>Please Log In </p>}
+        <p onClick={this.props.click}>
+          Hi, I am {this.props.name}. I am {this.props.age} years old.{" "}
+          {this.props.children}
+        </p>
+        <input type="text"
+        //  ref={(inputEl) => {this.inputElement = inputEl}} 
+        ref={this.inputElementRef}
+         onChange={this.props.changed}></input>
+      </Aux>
+    );
+  }
+}
+
+Person.propTypes = {
+  click: PropTypes.func,
+  name: PropTypes.string,
+  age: PropTypes.number,
+  changed: PropTypes.func,
 };
 
-export default person;
+export default Person;
 // export default Radium(person);

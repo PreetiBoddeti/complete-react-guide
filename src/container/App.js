@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { Component } from "react";
 import Persons from "../components/Persons/Persons";
 import classes from "./App.css";
 import Cockpit from "../components/Persons/Cockpit/Cockpit.js";
+import WithClass from "../hoc/withClass";
+// import Aux from "../hoc/Auxiliary";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    console.log("[App.js] constructor");
+  }
   state = {
     persons: [
       { id: "id1", name: "Max", age: 28 },
@@ -12,7 +18,31 @@ class App extends Component {
       { id: "id3", name: "jack", age: 29 },
     ],
     showPersons: false,
+    showcockpit: true,
+    authenticated:  false,
   };
+
+  static getDerivedStateFromProps(props, state) {
+    console.log("[App.js] getDerivedStateFromProps");
+    return state;
+  }
+
+  componentDidMount() {
+    console.log("[App.js] componentDidMount");
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("[App.js] shouldComponentUpdate");
+    return true;
+  }
+
+  componentDidUpdate() {
+    console.log("[App.js] componentDidUpdate");
+  }
+
+  componentWillUnmount() {
+    console.log("[App.js] componentWillUnmount");
+  }
 
   switchNameHandler = (newName) => {
     this.setState({
@@ -23,6 +53,10 @@ class App extends Component {
       ],
     });
   };
+
+  logInHandler = () =>{
+    this.setState({authenticated:  true});
+  }
 
   togglePersonHandler = () => {
     const doesShow = this.state.showPersons;
@@ -55,8 +89,8 @@ class App extends Component {
   };
 
   render() {
+    console.log("[App.js] render");
     let persons = null;
-    let btnClass = "";
 
     if (this.state.showPersons) {
       persons = (
@@ -64,21 +98,31 @@ class App extends Component {
           persons={this.state.persons}
           clicked={this.deletePersonHandler}
           changed={this.nameChangedHandler}
+          isAuthenticated = {this.state.authenticated}
         />
       );
     }
 
     return (
-      <div className={classes.App}>
-        <Cockpit
+      <WithClass classes={classes.App}>
+        <button
+          onClick={() => {
+            this.setState({ showcockpit: false });
+          }}
+        >
+          Remove Cockpit
+        </button>
+        {this.state.showcockpit ? <Cockpit
+          title={this.props.appTitle}
           showPersons={this.state.showPersons}
+          personsLength={this.state.persons.length}
           persons={this.state.persons}
           clicked={this.togglePersonHandler}
-        />
+          logIn= {this.logInHandler}
+        /> : null}
         {persons}
-      </div>
+      </WithClass>
     );
   }
 }
 export default App;
-
