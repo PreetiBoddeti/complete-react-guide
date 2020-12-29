@@ -29,16 +29,16 @@ class BurgerBuilder extends Component {
     error: false
   };
 
-  componentDidMount() {
-    axios
-      .get(
-        "https://react-my-burger-501d1-default-rtdb.firebaseio.com/ingredients.json"
-      )
-      .then((response) => {
-        this.setState({ ingredients: response.data });
-      })
-      .catch(error => {this.setState({error: true})});
-  }
+  // componentDidMount() {
+  //   axios
+  //     .get(
+  //       "https://react-my-burger-501d1-default-rtdb.firebaseio.com/ingredients.json"
+  //     )
+  //     .then((response) => {
+  //       this.setState({ ingredients: response.data });
+  //     })
+  //     .catch(error => {this.setState({error: true})});
+  // }
 
   purchaseHandler = () => {
     this.setState({ purchasing: true });
@@ -48,30 +48,16 @@ class BurgerBuilder extends Component {
     this.setState({ purchasing: false });
   };
 
-  purchaseContinueJHandler = () => {
-    this.setState({ loading: true });
-    // alert('You Continue!!');
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: "Preeti",
-        address: {
-          street: "Test Street",
-          zipcode: "16278",
-          country: "India",
-        },
-        email: "preeti@gmail.com",
-      },
-      delivaryMethod: "fastTest",
-    };
-    axios
-      .post("/orders.json", order)
-      .then((response) => {
-        this.setState({ loading: false, purchasing: false });
-      })
-      .catch((err) => {
-        this.setState({ loading: false, purchasing: false });
+  purchaseContinueHandler = () => {
+      const queryParams= [];
+      for(let i in this.state.ingredients){
+        queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]) )
+      }
+      queryParams.push('price=' + this.state.totalPrice);
+      const queryString =queryParams.join('&');
+      this.props.history.push({
+        pathname: '/checkout' ,
+        search: '?' + queryString
       });
   };
   updatePurchaseState(ingredients) {
@@ -143,7 +129,7 @@ class BurgerBuilder extends Component {
           ingredients={this.state.ingredients}
           price={this.state.totalPrice}
           purchaseCancelled={this.purchaseCancelHandler}
-          purchaseContinued={this.purchaseContinueJHandler}
+          purchaseContinued={this.purchaseContinueHandler}
         />
       );
     }
